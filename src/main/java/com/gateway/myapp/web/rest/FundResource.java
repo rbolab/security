@@ -2,23 +2,20 @@ package com.gateway.myapp.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.gateway.myapp.service.FundService;
-import com.gateway.myapp.web.rest.util.HeaderUtil;
 import com.gateway.myapp.service.dto.FundDTO;
+import com.gateway.myapp.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing Fund.
@@ -81,9 +78,9 @@ public class FundResource {
      */
     @GetMapping("/funds")
     @Timed
+    @PostAuthorize("@fundSecurity.displayFilter(authentication, returnObject)")
     public List<FundDTO> getAllFunds() {
         log.debug("REST request to get all Funds");
-
         return fundService.findAll();
     }
 
